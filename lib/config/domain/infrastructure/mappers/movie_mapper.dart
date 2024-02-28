@@ -2,6 +2,7 @@ import 'package:cinemapedia/config/domain/entities/movie.dart';
 import 'package:cinemapedia/config/domain/infrastructure/models/moviedb/movie_moviedb.dart';
 
 class MovieMapper {
+  
   static Movie movieDBToEntity(MovieMovieDB moviedb) => Movie(
       adult: moviedb.adult,
       backdropPath: (moviedb.backdropPath != '')
@@ -15,7 +16,7 @@ class MovieMapper {
       popularity: moviedb.popularity,
       posterPath: (moviedb.posterPath != '')
                   ? 'https://image.tmdb.org/t/p/w500/${moviedb.posterPath}'
-                  : 'https://content.numetro.co.za/ui_images/no_poster.png',
+                  : 'no-poster',
       releaseDate: moviedb.releaseDate,
       title: moviedb.title,
       video: moviedb.video,
