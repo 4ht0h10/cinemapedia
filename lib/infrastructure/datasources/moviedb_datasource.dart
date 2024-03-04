@@ -5,6 +5,11 @@ import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart'
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 
+
+/// Clase que pilla las películas de MoviesDB tal como las tienen ellos
+/// y las devuelve en una lista de películas tal como necesita
+/// nuestra lógica de negocio despues de flitratlas y mapearlas.
+/// 
 class MoviedbDatasource extends MoviesDatasource {
 
   final dio = Dio(BaseOptions(
@@ -14,7 +19,7 @@ class MoviedbDatasource extends MoviesDatasource {
       'Authorization': Environment.bearerToken
     },
     connectTimeout: const Duration(seconds: 6),
-    receiveTimeout: const Duration(seconds: 4),
+    receiveTimeout: const Duration(seconds: 5),
   ));
 
   @override
@@ -30,4 +35,5 @@ class MoviedbDatasource extends MoviesDatasource {
 
     return movies;
   }
+  
 }
