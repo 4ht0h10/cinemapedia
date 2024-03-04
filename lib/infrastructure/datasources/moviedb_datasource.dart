@@ -14,10 +14,8 @@ class MoviedbDatasource extends MoviesDatasource {
 
   final dio = Dio(BaseOptions(
     baseUrl: 'https://api.themoviedb.org/3/movie/',
-    queryParameters: {
-      'languaje': 'es-ES',
-      'Authorization': Environment.bearerToken
-    },
+    headers:  { "authorization": "Bearer ${Environment.bearerToken}" },
+    queryParameters: { 'languaje': 'es-ES' },
     connectTimeout: const Duration(seconds: 6),
     receiveTimeout: const Duration(seconds: 5),
   ));
