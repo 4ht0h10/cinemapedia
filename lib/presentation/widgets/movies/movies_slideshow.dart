@@ -10,7 +10,6 @@ class MoviesSliceshow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final colors = Theme.of(context).colorScheme;
 
     return SizedBox(
@@ -25,9 +24,9 @@ class MoviesSliceshow extends StatelessWidget {
           return _Slide(movie: movies[index]);
         },
         pagination: SwiperPagination(
-            margin: EdgeInsets.only(top: 0),
-            builder: DotSwiperPaginationBuilder(activeColor: colors.primary, color: colors.secondary)
-          ),
+            margin: const EdgeInsets.only(top: 0),
+            builder: DotSwiperPaginationBuilder(
+                activeColor: colors.primary, color: colors.secondary)),
       ),
     );
   }
@@ -63,6 +62,16 @@ class _Slide extends StatelessWidget {
               }
 
               return FadeIn(child: child);
+            },
+            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+              // TODO: Appropriate logging or analytics, e.g.
+              // myAnalytics.recordError(
+              //   'An error occurred loading "https://example.does.not.exist/image.jpg"',
+              //   exception,
+              //   stackTrace,
+              // );
+              print('**** Ha petado la recuperación de la imagen ${movie.backdropPath}');
+              return const Text('################');
             },
           ),
         ),
