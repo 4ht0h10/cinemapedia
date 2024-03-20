@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/config/helpers/humans_formats.dart';
 
 class MovieHorizontalListview extends StatelessWidget {
   final List<Movie> movies;
@@ -19,7 +20,7 @@ class MovieHorizontalListview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 360,
       child: Column(
         children: [
           // El título y fecha. Si viene uno de los dos ya me vale
@@ -118,7 +119,7 @@ class _Slide extends StatelessWidget {
             width: 150,
             child: Text(movie.title,
               maxLines: 2,
-              // TODO: overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.ellipsis,
               style: textStyles.titleSmall,
             ),
           ),
@@ -128,10 +129,9 @@ class _Slide extends StatelessWidget {
             children: [
               Icon(Icons.star_half_outlined, color: Colors.yellow.shade800),
               const SizedBox(width: 3),
-              Text('${movie.voteAverage}',
-                  style: textStyles.bodyMedium?.copyWith(color: Colors.yellow.shade800)),
+              Text(HumanFormats.average(movie.voteAverage), style: textStyles.bodyMedium?.copyWith(color: Colors.yellow.shade800)),
               const SizedBox(width: 10),
-              Text('${movie.popularity}', style: textStyles.bodySmall),
+              Text( HumanFormats.bigNumber(movie.popularity), style: textStyles.bodySmall),
             ],
           )
         ],
