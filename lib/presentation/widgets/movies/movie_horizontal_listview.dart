@@ -3,7 +3,7 @@ import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/humans_formats.dart';
 
-class MovieHorizontalListview extends StatelessWidget {
+class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
   final String? title;
   final String? subTitle;
@@ -18,23 +18,53 @@ class MovieHorizontalListview extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<MovieHorizontalListview> createState() =>
+      _MovieHorizontalListviewState();
+}
+
+class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    scrollController.addListener(() {
+      if (widget.loadNextPage == null) return;
+
+      if (scrollController.position.pixels + 200 >=
+          scrollController.position.maxScrollExtent) {
+              print(' --------------------------------- llamando a la función');
+              widget.loadNextPage!();
+          }
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 360,
       child: Column(
         children: [
           // El título y fecha. Si viene uno de los dos ya me vale
-          if (title != null || subTitle != null)
-            _Title(title: title, subTitle: subTitle),
+          if (widget.title != null || widget.subTitle != null)
+            _Title(title: widget.title, subTitle: widget.subTitle),
 
           // El ListView con unos slide de películas actualmente en cartelera
           Expanded(
             child: ListView.builder(
-              itemCount: movies.length,
+              controller: scrollController,
+              itemCount: widget.movies.length,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                return _Slide(movie: movies[index]);
+                return _Slide(movie: widget.movies[index]);
               },
             ),
           )
@@ -59,8 +89,7 @@ class _Title extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          if (title != null)
-            Text( title!, style: titleStyle ),
+          if (title != null) Text(title!, style: titleStyle),
           const Spacer(),
           if (subTitle != null)
             FilledButton.tonal(
@@ -108,6 +137,17 @@ class _Slide extends StatelessWidget {
 
                   return FadeIn(child: child);
                 },
+                errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                // TODO: Appropriate logging or analytics, e.g.
+                // myAnalytics.recordError(
+                //   'An error occurred loading "https://example.does.not.exist/image.jpg"',
+                //   exception,
+                //   stackTrace,
+                // );
+                print('**** Ha petado la imagen: ${movie.posterPath}');
+                
+                return const Text('Image.network ERROR!');
+                },
               ),
             ),
           ),
@@ -117,7 +157,8 @@ class _Slide extends StatelessWidget {
           //* Título
           SizedBox(
             width: 150,
-            child: Text(movie.title,
+            child: Text(
+              movie.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: textStyles.titleSmall,
@@ -129,9 +170,12 @@ class _Slide extends StatelessWidget {
             children: [
               Icon(Icons.star_half_outlined, color: Colors.yellow.shade800),
               const SizedBox(width: 3),
-              Text(HumanFormats.average(movie.voteAverage), style: textStyles.bodyMedium?.copyWith(color: Colors.yellow.shade800)),
+              Text(HumanFormats.average(movie.voteAverage),
+                  style: textStyles.bodyMedium
+                      ?.copyWith(color: Colors.yellow.shade800)),
               const SizedBox(width: 10),
-              Text( HumanFormats.bigNumber(movie.popularity), style: textStyles.bodySmall),
+              Text(HumanFormats.bigNumber(movie.popularity),
+                  style: textStyles.bodySmall),
             ],
           )
         ],

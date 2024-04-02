@@ -70,7 +70,7 @@ class _Slide extends StatelessWidget {
               //   exception,
               //   stackTrace,
               // );
-              print('**** Ha petado la recuperación de la imagen ${movie.backdropPath}');
+              print('**** Ha petado la recuperación de la imagen: ${movie.backdropPath}');
               return const Text('################');
             },
           ),
