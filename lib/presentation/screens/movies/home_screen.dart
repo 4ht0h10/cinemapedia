@@ -35,81 +35,77 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     ref.read(upcomingMoviesProvider.notifier).loadNextPage();
     ref.read(popularMoviesProvider.notifier).loadNextPage();
     ref.read(topRatedMoviesProvider.notifier).loadNextPage();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
+
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if ( initialLoading ) return const FlullScreenLoader();
+
+
     final nowPlaying7Movies = ref.watch(moviesSlideShowProvider);
-    final nowPlayingMovies  = ref.watch(nowPlayingMoviesProvider);
-    final upcomingMovies    = ref.watch(popularMoviesProvider);
-    final popularMovies     = ref.watch(popularMoviesProvider);
-    final topRatedMovies    = ref.watch(popularMoviesProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final upcomingMovies = ref.watch(popularMoviesProvider);
+    final popularMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(popularMoviesProvider);
 
-    if (nowPlaying7Movies.isEmpty) return const CircularProgressIndicator();
 
-    return const FlullScreenLoader();
-    
-    return CustomScrollView(
-      slivers: [
+    //if ( nowPlaying7Movies.isEmpty ) return const CircularProgressIndicator();
 
-              const SliverAppBar(
-                floating: true,
-                flexibleSpace: CustomAppbar(),
-              ),
 
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: 1,
-                  (context, index) {
-                    return Column(
-                            children: [
-                              // Carrusel
-                              MoviesSliceshow(movies: nowPlaying7Movies),
+    return CustomScrollView(slivers: [
+      const SliverAppBar(
+        floating: true,
+        flexibleSpace: CustomAppbar(),
+      ),
+      SliverList(
+          delegate: SliverChildBuilderDelegate(childCount: 1, (context, index) {
+        return Column(
+          children: [
+            // Carrusel
+            MoviesSliceshow(movies: nowPlaying7Movies),
 
-                              // Now playing movies
-                              MovieHorizontalListview(
-                                movies: nowPlayingMovies,
-                                title: 'En cines',
-                                subTitle: '20/03/2024',
-                                loadNextPage: () =>
-                                    ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
-                              ),
+            // Now playing movies
+            MovieHorizontalListview(
+              movies: nowPlayingMovies,
+              title: 'En cines',
+              subTitle: '20/03/2024',
+              loadNextPage: () =>
+                  ref.read(nowPlayingMoviesProvider.notifier).loadNextPage(),
+            ),
 
-                              // Upcoming movies
-                              MovieHorizontalListview(
-                                movies: upcomingMovies,
-                                title: 'Próximos estrenos',
-                                //subTitle: 'Never',
-                                loadNextPage: () =>
-                                    ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
-                              ),
+            // Upcoming movies
+            MovieHorizontalListview(
+              movies: upcomingMovies,
+              title: 'Próximos estrenos',
+              //subTitle: 'Never',
+              loadNextPage: () =>
+                  ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
+            ),
 
-                              // Popular movies
-                              MovieHorizontalListview(
-                                movies: popularMovies,
-                                title: 'Populares',
-                                //subTitle: 'Las más vistas',
-                                loadNextPage: () =>
-                                    ref.read(popularMoviesProvider.notifier).loadNextPage(),
-                              ),
+            // Popular movies
+            MovieHorizontalListview(
+              movies: popularMovies,
+              title: 'Populares',
+              //subTitle: 'Las más vistas',
+              loadNextPage: () =>
+                  ref.read(popularMoviesProvider.notifier).loadNextPage(),
+            ),
 
-                              // Top rated movies
-                              MovieHorizontalListview(
-                                movies: topRatedMovies,
-                                title: 'Mejor valoradas',
-                                //subTitle: 'Las más vistas',
-                                loadNextPage: () =>
-                                    ref.read(topRatedMoviesProvider.notifier).loadNextPage(),
-                              ),
+            // Top rated movies
+            MovieHorizontalListview(
+              movies: topRatedMovies,
+              title: 'Mejor valoradas',
+              //subTitle: 'Las más vistas',
+              loadNextPage: () =>
+                  ref.read(topRatedMoviesProvider.notifier).loadNextPage(),
+            ),
 
-                              const SizedBox(height: 10),
-                            ],
-                          );
-                  }))
-      ]
-      
-    );
+            const SizedBox(height: 10),
+          ],
+        );
+      }))
+    ]);
   }
 }
