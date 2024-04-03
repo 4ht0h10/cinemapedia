@@ -38,6 +38,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   }
 
+
   @override
   Widget build(BuildContext context) {
     final nowPlaying7Movies = ref.watch(moviesSlideShowProvider);
@@ -48,6 +49,8 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     if (nowPlaying7Movies.isEmpty) return const CircularProgressIndicator();
 
+    return const FlullScreenLoader();
+    
     return CustomScrollView(
       slivers: [
 
