@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
+  
   static const name = '/';
 
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,9 +47,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     final nowPlaying7Movies = ref.watch(moviesSlideShowProvider);
     final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
-    final upcomingMovies = ref.watch(popularMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
     final popularMovies = ref.watch(popularMoviesProvider);
-    final topRatedMovies = ref.watch(popularMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
 
 
     //if ( nowPlaying7Movies.isEmpty ) return const CircularProgressIndicator();
@@ -84,6 +85,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
             ),
 
+            
             // Popular movies
             MovieHorizontalListview(
               movies: popularMovies,

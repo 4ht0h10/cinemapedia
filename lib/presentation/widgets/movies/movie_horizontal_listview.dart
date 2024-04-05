@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/humans_formats.dart';
+import 'package:go_router/go_router.dart';
 
 class MovieHorizontalListview extends StatefulWidget {
   final List<Movie> movies;
@@ -10,12 +11,13 @@ class MovieHorizontalListview extends StatefulWidget {
   final VoidCallback? loadNextPage;
 
   const MovieHorizontalListview(
-      {Key? key,
-      required this.movies,
-      this.title,
-      this.subTitle,
-      this.loadNextPage})
-      : super(key: key);
+      {
+        Key? key,
+        required this.movies,
+        this.title,
+        this.subTitle,
+        this.loadNextPage
+      }): super(key: key);
 
   @override
   State<MovieHorizontalListview> createState() =>
@@ -30,11 +32,11 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
     scrollController.addListener(() {
       if (widget.loadNextPage == null) return;
 
-      if (scrollController.position.pixels + 200 >=
+      if (scrollController.position.pixels + 150 >=
           scrollController.position.maxScrollExtent) {
-              print(' --------------------------------- llamando a la función');
-              widget.loadNextPage!();
-          }
+                  widget.loadNextPage!();
+                  print(' --------------------------------- llamando a la función');
+      }
     });
 
     super.initState();
@@ -52,20 +54,19 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
       height: 360,
       child: Column(
         children: [
+
           // El título y fecha. Si viene uno de los dos ya me vale
           if (widget.title != null || widget.subTitle != null)
             _Title(title: widget.title, subTitle: widget.subTitle),
 
-          // El ListView con unos slide de películas actualmente en cartelera
+          // El ListView con unos slide de películas
           Expanded(
             child: ListView.builder(
               controller: scrollController,
               itemCount: widget.movies.length,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return FadeInRight(child: _Slide(movie: widget.movies[index]));
-              },
+              itemBuilder: (context, index) => FadeInRight(child: _Slide(movie: widget.movies[index])),
             ),
           )
         ],
@@ -117,7 +118,8 @@ class _Slide extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          //* Imagen
+
+          //* Imagen  -----------------------------------------
           SizedBox(
             width: 150,
             child: ClipRRect(
@@ -135,18 +137,22 @@ class _Slide extends StatelessWidget {
                     );
                   }
 
-                  return FadeIn(child: child);
+                  return GestureDetector(
+                    onTap: () => context.push('/movie/${movie.id}'),
+                    child: FadeIn(child: child),
+                  );
                 },
-                errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                // TODO: Appropriate logging or analytics, e.g.
-                // myAnalytics.recordError(
-                //   'An error occurred loading "https://example.does.not.exist/image.jpg"',
-                //   exception,
-                //   stackTrace,
-                // );
-                print('**** Ha petado la imagen: ${movie.posterPath}');
-                
-                return const Text('Image.network ERROR!');
+                errorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                  // TODO: Appropriate logging or analytics, e.g.
+                  // myAnalytics.recordError(
+                  //   'An error occurred loading "https://example.does.not.exist/image.jpg"',
+                  //   exception,
+                  //   stackTrace,
+                  // );
+                  print(' **** Ha petado la imagen: ${movie.posterPath}');
+
+                  return const Text('Image.network ERROR!');
                 },
               ),
             ),
@@ -154,7 +160,7 @@ class _Slide extends StatelessWidget {
 
           const SizedBox(height: 5),
 
-          //* Título
+          //* Título  ----------------------------------------------
           SizedBox(
             width: 150,
             child: Text(
@@ -165,7 +171,7 @@ class _Slide extends StatelessWidget {
             ),
           ),
 
-          //* Rating
+          //* Rating  ---------------------------------------------
           Row(
             children: [
               Icon(Icons.star_half_outlined, color: Colors.yellow.shade800),
