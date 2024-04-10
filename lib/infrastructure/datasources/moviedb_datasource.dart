@@ -1,3 +1,4 @@
+import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
 import 'package:dio/dio.dart';
 import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
@@ -18,7 +19,6 @@ class MoviedbDatasource extends MoviesDatasource {
   ));
 
   List<Movie> _json2Movies(Map<String, dynamic> json) {
-    
     final movieDBResponse = MovieDbResponse.fromJson(json);
 
     final List<Movie> movies = movieDBResponse.results
@@ -31,7 +31,6 @@ class MoviedbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
-
     final response = await dio.get(
       '/now_playing',
       queryParameters: {'languaje': 'es-ES', 'page': page},
@@ -42,40 +41,50 @@ class MoviedbDatasource extends MoviesDatasource {
 
   @override
   Future<List<Movie>> getPopular({int page = 1}) async {
-
     final response = await dio.get(
       '/popular',
       queryParameters: {'languaje': 'es-ES', 'page': page},
     );
 
-    return _json2Movies(response.data);   
+    return _json2Movies(response.data);
   }
 
   @override
   Future<List<Movie>> getUpcoming({int page = 1}) async {
-
     final response = await dio.get(
       '/upcoming',
       queryParameters: {'languaje': 'es-ES', 'page': page},
     );
 
-    return _json2Movies(response.data);   
+    return _json2Movies(response.data);
   }
 
   @override
   Future<List<Movie>> getTopRated({int page = 1}) async {
-
     final response = await dio.get(
       '/top_rated',
       queryParameters: {'languaje': 'es-ES', 'page': page},
     );
 
-    return _json2Movies(response.data);   
+    return _json2Movies(response.data);
   }
 
+  @override
+  Future<Movie> getMovieById(String id) async {
+    
+    final response = await dio.get(
+      '/$id',
+      queryParameters: {'languaje': 'es-ES'},
+    );
+
+    if (response.statusCode != 200)
+      throw Exception('Movie with id $id not found');
+
+    final movieDetails = MovieDetails.fromJson(response.data);
+
+    final Movie movie = MovieMapper.movieDetailToEntity(movieDetails);
 
 
-
-
-
+    return movie;
+  }
 }
