@@ -128,8 +128,8 @@ class BelongsToCollection {
     factory BelongsToCollection.fromJson(Map<String, dynamic> json) => BelongsToCollection(
         id: json["id"],
         name: json["name"],
-        posterPath: json["poster_path"],
-        backdropPath: json["backdrop_path"],
+        posterPath: json["poster_path"] ?? 'https://demofree.sirv.com/nope-not-here.jpg',
+        backdropPath: json["backdrop_path"] ?? 'https://demofree.sirv.com/nope-not-here.jpg',
     );
 
     Map<String, dynamic> toJson() => {
