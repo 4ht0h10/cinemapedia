@@ -129,7 +129,9 @@ class _Slide extends StatelessWidget {
                 fit: BoxFit.cover,
                 width: 150,
                 loadingBuilder: (context, child, loadingProgress) {
+
                   if (loadingProgress != null) {
+
                     return const Padding(
                       padding: EdgeInsets.all(9),
                       child: Center(
@@ -138,8 +140,8 @@ class _Slide extends StatelessWidget {
                   }
 
                   return GestureDetector(
-                    onTap: () => context.push('/movie/${movie.id}'),
                     child: FadeIn(child: child),
+                    onTap: () => context.push('/movie/${movie.id}'),
                   );
                 },
                 errorBuilder: (BuildContext context, Object exception,
