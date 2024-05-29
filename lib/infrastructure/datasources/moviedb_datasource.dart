@@ -33,7 +33,7 @@ class MoviedbDatasource extends MoviesDatasource {
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     final response = await dio.get(
       '/now_playing',
-      queryParameters: {'languaje': 'es-ES', 'page': page},
+      queryParameters: {'language': 'es-ES', 'page': page},
     );
 
     return _json2Movies(response.data);
@@ -43,7 +43,7 @@ class MoviedbDatasource extends MoviesDatasource {
   Future<List<Movie>> getPopular({int page = 1}) async {
     final response = await dio.get(
       '/popular',
-      queryParameters: {'languaje': 'es-ES', 'page': page},
+      queryParameters: {'language': 'es-ES', 'page': page},
     );
 
     return _json2Movies(response.data);
@@ -53,7 +53,7 @@ class MoviedbDatasource extends MoviesDatasource {
   Future<List<Movie>> getUpcoming({int page = 1}) async {
     final response = await dio.get(
       '/upcoming',
-      queryParameters: {'languaje': 'es-ES', 'page': page},
+      queryParameters: {'page': page, 'language': 'es-ES'},
     );
 
     return _json2Movies(response.data);
@@ -63,7 +63,7 @@ class MoviedbDatasource extends MoviesDatasource {
   Future<List<Movie>> getTopRated({int page = 1}) async {
     final response = await dio.get(
       '/top_rated',
-      queryParameters: {'languaje': 'es-ES', 'page': page},
+      queryParameters: {'language': 'es-ES', 'page': page},
     );
 
     return _json2Movies(response.data);
@@ -74,11 +74,10 @@ class MoviedbDatasource extends MoviesDatasource {
     
     final response = await dio.get(
       '/$id',
-      queryParameters: {'languaje': 'es-ES'},
+      queryParameters: {'language': 'es-ES'},
     );
 
-    if (response.statusCode != 200)
-      throw Exception('Movie with id $id not found');
+    if (response.statusCode != 200) throw Exception('*** Movie with id $id not found');
 
     final movieDetails = MovieDetails.fromJson(response.data);
 
@@ -87,4 +86,16 @@ class MoviedbDatasource extends MoviesDatasource {
 
     return movie;
   }
+  
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
+    
+    final response = await dio.get(
+      '/search/movie',
+      queryParameters: {'query': query,  'language': 'es-ES' },
+    );
+
+    return _json2Movies(response.data);
+  }
+
 }

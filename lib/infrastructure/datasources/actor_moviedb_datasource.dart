@@ -33,7 +33,7 @@ class ActorMoviedbDatasource extends ActorsDatasource {
 
     final response = await dio.get(
       '${ movieId }/credits',
-      queryParameters: {'languaje': 'es-ES'},
+      queryParameters: {'language': 'es-ES'},
     );
 
 
