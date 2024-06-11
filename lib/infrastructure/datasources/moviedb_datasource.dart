@@ -6,16 +6,22 @@ import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart'
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 
+const String APPLICATION_JSON = 'application/json';
+const String CONTENT_TYPE = 'content-type';
+const String LANGUAGE = 'es-ES';
+const String BASE_URL = 'https://api.themoviedb.org/3/';
+
 /// Clase que pilla las películas de MoviesDB tal como las tienen ellos
 /// y las devuelve en una lista de películas tal como necesita
 /// nuestra lógica de negocio despues de flitratlas y mapearlas.
 ///
 class MoviedbDatasource extends MoviesDatasource {
   final dio = Dio(BaseOptions(
-    baseUrl: 'https://api.themoviedb.org/3/movie/',
-    headers: {"authorization": "Bearer ${Environment.bearerToken}"},
-    connectTimeout: const Duration(seconds: 9),
-    receiveTimeout: const Duration(seconds: 6),
+    baseUrl: BASE_URL,
+    headers: {"authorization": "Bearer ${Environment.bearerToken}",
+              "Accept":        "application/json"},
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 10),
   ));
 
   List<Movie> _json2Movies(Map<String, dynamic> json) {
@@ -32,8 +38,8 @@ class MoviedbDatasource extends MoviesDatasource {
   @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     final response = await dio.get(
-      '/now_playing',
-      queryParameters: {'language': 'es-ES', 'page': page},
+      'movie/now_playing',
+      queryParameters: {'language': LANGUAGE, 'page': page},
     );
 
     return _json2Movies(response.data);
@@ -42,8 +48,8 @@ class MoviedbDatasource extends MoviesDatasource {
   @override
   Future<List<Movie>> getPopular({int page = 1}) async {
     final response = await dio.get(
-      '/popular',
-      queryParameters: {'language': 'es-ES', 'page': page},
+      'movie/popular',
+      queryParameters: {'language': LANGUAGE, 'page': page},
     );
 
     return _json2Movies(response.data);
@@ -52,8 +58,8 @@ class MoviedbDatasource extends MoviesDatasource {
   @override
   Future<List<Movie>> getUpcoming({int page = 1}) async {
     final response = await dio.get(
-      '/upcoming',
-      queryParameters: {'page': page, 'language': 'es-ES'},
+      'movie/upcoming',
+      queryParameters: {'page': page, 'language': LANGUAGE},
     );
 
     return _json2Movies(response.data);
@@ -62,8 +68,8 @@ class MoviedbDatasource extends MoviesDatasource {
   @override
   Future<List<Movie>> getTopRated({int page = 1}) async {
     final response = await dio.get(
-      '/top_rated',
-      queryParameters: {'language': 'es-ES', 'page': page},
+      'movie/top_rated',
+      queryParameters: {'language': LANGUAGE, 'page': page},
     );
 
     return _json2Movies(response.data);
@@ -71,31 +77,55 @@ class MoviedbDatasource extends MoviesDatasource {
 
   @override
   Future<Movie> getMovieById(String id) async {
-    
     final response = await dio.get(
-      '/$id',
-      queryParameters: {'language': 'es-ES'},
+      'movie/$id',
+      queryParameters: {'language': LANGUAGE},
     );
 
-    if (response.statusCode != 200) throw Exception('*** Movie with id $id not found');
+    if (response.statusCode != 200)
+      throw Exception('*** Movie with id $id not found');
 
     final movieDetails = MovieDetails.fromJson(response.data);
 
     final Movie movie = MovieMapper.movieDetailToEntity(movieDetails);
 
-
     return movie;
   }
-  
+
   @override
   Future<List<Movie>> searchMovies(String query) async {
-    
-    final response = await dio.get(
+    // GET /3/search/movie?query=batm&include_adult=false&language=en-US&page=1 HTTP/1.1
+    // Accept: application/json
+    // Authorization: Bearer eyJ.. ..K_UEZA
+    // Host: api.themoviedb.org
+
+    try {
+      // Bloque supervisado
+      final resp = await dio.get(
+        '/search/movie',
+        queryParameters: {'query': query, 'language': LANGUAGE},
+      );
+
+      return _json2Movies(resp.data);
+    } on DioException catch (e) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+      if (e.response != null) {
+        print('-- Error.data = ${e.response!.data}');
+        print('-- Error.headers = ${e.response!.headers}');
+        print('-- Error.requestOptions = ${e.response!.requestOptions}');
+        rethrow;
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print('-- Error.requestOptions = ${e.requestOptions}');
+        print('-- Error.message = ${e.message}');
+        rethrow;
+      }
+    }
+
+    /*     final response = await dio.get(
       '/search/movie',
-      queryParameters: {'query': query,  'language': 'es-ES' },
-    );
-
-    return _json2Movies(response.data);
+      queryParameters: {'query': query, 'language': LANGUAGE},
+    ); */
   }
-
 }
