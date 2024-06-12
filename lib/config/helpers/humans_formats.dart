@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 
 class HumanFormats {
 
-  static String bigNumber(double number) {
+  static String bigNumber(double number, [ int decimals = 0 ]) {
 
     final formattedNumber = NumberFormat.compactCurrency(
-      decimalDigits: 0,
+      decimalDigits: decimals,
       symbol: '',
       locale: 'en'
     ).format(number);

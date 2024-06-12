@@ -8,7 +8,7 @@ class MovieDetails {
     final List<Genre> genres;
     final String homepage;
     final int id;
-    final String imdbId;
+    final String? imdbId;
     final String originalLanguage;
     final String originalTitle;
     final String overview;
@@ -30,12 +30,12 @@ class MovieDetails {
     MovieDetails({
         required this.adult,
         required this.backdropPath,
-        required this.belongsToCollection,
+        this.belongsToCollection,
         required this.budget,
         required this.genres,
         required this.homepage,
         required this.id,
-        required this.imdbId,
+        this.imdbId,
         required this.originalLanguage,
         required this.originalTitle,
         required this.overview,

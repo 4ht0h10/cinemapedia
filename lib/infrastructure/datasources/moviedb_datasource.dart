@@ -6,7 +6,7 @@ import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart'
 import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 
-const String APPLICATION_JSON = 'application/json';
+const String ACCEPT = 'application/json';
 const String CONTENT_TYPE = 'content-type';
 const String LANGUAGE = 'es-ES';
 const String BASE_URL = 'https://api.themoviedb.org/3/';
@@ -19,7 +19,7 @@ class MoviedbDatasource extends MoviesDatasource {
   final dio = Dio(BaseOptions(
     baseUrl: BASE_URL,
     headers: {"authorization": "Bearer ${Environment.bearerToken}",
-              "Accept":        "application/json"},
+              "Accept":        ACCEPT},
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 10),
   ));
